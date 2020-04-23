@@ -1,0 +1,44 @@
+---
+#
+# This snippet is called from another role that wishes to register the
+# intent to have a letsencrypt SSL certificate.  It sets everything up
+# to use the certificate, before the dehydrated is installed, configured
+# or has connected to the internet
+#
+
+- name: create dirs
+  file:
+    state: directory
+    path: "{{ item.path }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - path: /etc/dehydrated
+      mode: "u=rwx,go=rx"
+    - path: /var/lib/dehydrated/acme-challenges
+      mode: "u=rwx,go=rx"
+    - path: "/var/lib/dehydrated/certs/{{ param.hostname }}"
+      mode: "u=rwx"
+
+- name: Add domain
+  lineinfile:
+    path: /etc/dehydrated/domains.txt
+    create: true
+    mode: "a=r"
+    line: "{{ param.hostname }}"
+  register: domain
+
+- name: Dummy certs
+  file:
+    state: link
+    path: "{{ item.path }}"
+    src: "{{ item.src }}"
+  when: domain.changed
+  loop:
+    - path: "/var/lib/dehydrated/certs/{{ param.hostname }}/cert.pem"
+      src: /etc/ssl/certs/ssl-cert-snakeoil.pem
+    - path: "/var/lib/dehydrated/certs/{{ param.hostname }}/chain.pem"
+      src: /etc/ssl/certs/ssl-cert-snakeoil.pem
+    - path: "/var/lib/dehydrated/certs/{{ param.hostname }}/fullchain.pem"
+      src: /etc/ssl/certs/ssl-cert-snakeoil.pem
+    - path: "/var/lib/dehydrated/certs/{{ param.hostname }}/privkey.pem"
+      src: /etc/ssl/private/ssl-cert-snakeoil.key

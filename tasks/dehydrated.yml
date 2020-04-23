@@ -1,0 +1,77 @@
+---
+
+- name: Package
+  apt:
+    name: dehydrated
+
+- name: post change hook script
+  copy:
+    dest: /usr/local/sbin/dehydrated_hook
+    mode: "a=rx"
+    src: dehydrated_hook
+
+- name: config file
+  copy:
+    dest: /etc/dehydrated/conf.d/config_hook.sh
+    mode: "a=r"
+    content: |
+      # Ansible managed
+      # Call the hook that restarts services
+      HOOK=/usr/local/sbin/dehydrated_hook
+
+- name: first run
+  command: dehydrated --register --accept-terms
+  args:
+    creates: /var/lib/dehydrated/accounts/
+
+- name: systemd service
+  copy:
+    dest: /etc/systemd/system/dehydrated.service
+    mode: "a=r"
+    content: |
+      # Ansible managed
+      [Unit]
+      Description=Run dehydrated
+
+      [Service]
+      Type=oneshot
+      ExecStart=dehydrated -c
+
+- name: systemd timer
+  copy:
+    dest: /etc/systemd/system/dehydrated.timer
+    mode: "a=r"
+    content: |
+      [Unit]
+      Description=Run dehydrated ssl renew weekly
+
+      [Timer]
+      OnCalendar=weekly
+
+      [Install]
+      WantedBy=timers.target
+
+- name: systemd reload
+  systemd:
+    daemon_reload: true
+
+- name: systemd enable
+  systemd:
+    name: "{{ item }}"
+    enabled: true
+  loop:
+    - dehydrated
+    - dehydrated.timer
+
+- name: systemd start timer
+  systemd:
+    name: dehydrated.timer
+    state: started
+
+# FIXME:
+# - dehydrated finds the snake-oil certs and assumed it doesnt need to do
+#   anything, thus we need an initial run with --force ..
+#   This should be triggerd by an update to domains.txt, but ..
+#
+
+

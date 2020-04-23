@@ -1,0 +1,44 @@
+#!/bin/bash
+#
+# dehydrated hook function
+#
+
+OP="$1"
+
+if [ "$OP" == "deploy_cert" ]; then
+    DOMAIN="$2"
+    PRIVKEY="$3"
+    CERT="$4"
+    FULLCHAIN="$5"
+
+    if pkill -0 nginx; then
+        systemctl reload nginx
+    fi
+
+    if pkill -0 apache2; then
+        systemctl reload apache2
+    fi
+
+    if pkill -0 turnserver; then
+        systemctl restart coturn
+    fi
+
+    # FIXME:
+    #if pkill -0 couriertcpd; then
+    #    COMBINED=/etc/ssl/private/$DOMAIN.key_plus_fullchain
+    #    cat $PRIVKEY $FULLCHAIN >$COMBINED
+    #    chmod ug=r,o= $COMBINED
+    #    chown root.root $COMBINED
+    #    /etc/init.d/courier-imap-ssl restart
+    #    /etc/init.d/courier-pop-ssl restart
+    #fi
+
+    # postfix smtpd:
+    # - it just reloads any config on each new connection
+    # - however, it probably wants to share the key_plus_fullchain
+    # TODO
+    # - always generate the key_plus_fullchain?
+    # - create symlinks from the debian standard /etc/ssl/$foo dirs?
+
+    # TODO - add more services...
+fi

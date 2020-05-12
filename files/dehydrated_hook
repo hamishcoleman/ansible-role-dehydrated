@@ -11,6 +11,12 @@ if [ "$OP" == "deploy_cert" ]; then
     CERT="$4"
     FULLCHAIN="$5"
 
+    # Which is the lesser of evils?
+    # - running services as root
+    # - allowing lots of users to read the privkey
+    # - configuring ACLs
+    chmod a+r "$PRIVKEY" "$CERT" "$FULLCHAIN"
+
     if pkill -0 nginx; then
         systemctl reload nginx
     fi

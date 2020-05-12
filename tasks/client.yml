@@ -45,4 +45,4 @@
 
 # FIXME:
 # - create dummy certs only if not currently exists
-# - set a flag requesting a "dehydrated --force" run if dummy certs created
+# - set a flag requesting a "dehydrated -c --force" run if dummy certs created

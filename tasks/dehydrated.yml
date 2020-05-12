@@ -24,6 +24,8 @@
   args:
     creates: /var/lib/dehydrated/accounts/
 
+# TODO: The first run often fails on CAC hardware, build a retry system?
+
 - name: systemd service
   copy:
     dest: /etc/systemd/system/dehydrated.service

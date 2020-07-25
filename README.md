@@ -13,13 +13,6 @@
 Note: for this process to work, the dehydrated role must come after any roles
 that install and configure the webserver serving the acme-challenges.
 
-Warning: due to the fail-safe nature of the snake-oil used to make sure
-the client software always sees valid certificates, the first time a new
-domain is added, a manual dehydrated run is needed:
-    sudo dehydrated -c --force $domain
-
-(Yes, this is something that should be fixed)
-
 ## Example webserver config
 
 nginx:

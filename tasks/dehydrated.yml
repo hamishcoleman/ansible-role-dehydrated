@@ -70,10 +70,16 @@
     name: dehydrated.timer
     state: started
 
-# FIXME:
-# - dehydrated finds the snake-oil certs and assumed it doesnt need to do
-#   anything, thus we need an initial run with --force ..
-#   This should be triggerd by an update to domains.txt, but ..
-#
+- name: Replace snakeoil certs
+  command: dehydrated -c --force
+  args:
+    removes: /var/lib/dehydrated/certs/snakeoil
 
+# The above is a lie, it doesnt "removes", instead it is used as a "run this
+# command only when the flag file exists"
+# So, we do the actual removal next
 
+- name: Remove snakeoil flag
+  file:
+    path: /var/lib/dehydrated/certs/snakeoil
+    state: absent

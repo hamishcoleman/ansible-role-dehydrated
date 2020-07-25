@@ -44,5 +44,13 @@
       src: /etc/ssl/private/ssl-cert-snakeoil.key
 
 # FIXME:
-# - create dummy certs only if not currently exists
+# - create the dummy snakeoil certs only if no real certs exist (could stat
+#   one and check if it is a symlink)
+
+- name: Flag that we have snakeoil
+  file:
+    state: touch
+    path: /var/lib/dehydrated/certs/snakeoil
+  when: domain.changed
+
 # - set a flag requesting a "dehydrated -c --force" run if dummy certs created

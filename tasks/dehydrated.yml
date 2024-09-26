@@ -2,7 +2,9 @@
 
 - name: Package
   apt:
-    name: dehydrated
+    name:
+      - dehydrated
+      - ssl-cert
 
 - name: post change hook script
   copy:

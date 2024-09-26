@@ -9,8 +9,8 @@
 - name: create dirs
   file:
     state: directory
-    path: "{{ item.path }}"
-    mode: "{{ item.mode }}"
+    path: "{{ dehydrated_item.path }}"
+    mode: "{{ dehydrated_item.mode }}"
   loop:
     - path: /etc/dehydrated
       mode: "u=rwx,go=rx"
@@ -18,6 +18,8 @@
       mode: "u=rwx,go=rx"
     - path: "/var/lib/dehydrated/certs/{{ param.hostname }}"
       mode: "u=rwx"
+  loop_control:
+    loop_var: dehydrated_item
 
 - name: Add domain
   lineinfile:
@@ -30,8 +32,8 @@
 - name: Dummy certs
   file:
     state: link
-    path: "{{ item.path }}"
-    src: "{{ item.src }}"
+    path: "{{ dehydrated_item.path }}"
+    src: "{{ dehydrated_item.src }}"
   when: domain.changed
   loop:
     - path: "/var/lib/dehydrated/certs/{{ param.hostname }}/cert.pem"
@@ -42,6 +44,8 @@
       src: /etc/ssl/certs/ssl-cert-snakeoil.pem
     - path: "/var/lib/dehydrated/certs/{{ param.hostname }}/privkey.pem"
       src: /etc/ssl/private/ssl-cert-snakeoil.key
+  loop_control:
+    loop_var: dehydrated_item
 
 # FIXME:
 # - create the dummy snakeoil certs only if no real certs exist (could stat

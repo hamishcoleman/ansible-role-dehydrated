@@ -29,7 +29,7 @@
     line: "{{ param.hostname }}"
   register: domain
 
-- name: Dummy certs
+- name: Dummy certs  # noqa: no-handler
   ansible.builtin.file:
     state: link
     path: "{{ dehydrated_item.path }}"
@@ -51,7 +51,7 @@
 # - create the dummy snakeoil certs only if no real certs exist (could stat
 #   one and check if it is a symlink)
 
-- name: Flag that we have snakeoil
+- name: Flag that we have snakeoil  # noqa: no-handler
   ansible.builtin.file:
     state: touch
     path: /var/lib/dehydrated/certs/snakeoil

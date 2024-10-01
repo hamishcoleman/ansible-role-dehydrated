@@ -1,19 +1,19 @@
 ---
 
 - name: Package
-  apt:
+  ansible.builtin.apt:
     name:
       - dehydrated
       - ssl-cert
 
-- name: post change hook script
-  copy:
+- name: Post change hook script
+  ansible.builtin.copy:
     dest: /usr/local/sbin/dehydrated_hook
     mode: "a=rx"
     src: dehydrated_hook
 
-- name: config file
-  copy:
+- name: Config file
+  ansible.builtin.copy:
     dest: /etc/dehydrated/conf.d/config_hook.sh
     mode: "a=r"
     content: |
@@ -21,15 +21,15 @@
       # Call the hook that restarts services
       HOOK=/usr/local/sbin/dehydrated_hook
 
-- name: first run
-  command: dehydrated --register --accept-terms
+- name: First run
+  ansible.builtin.command: dehydrated --register --accept-terms
   args:
     creates: /var/lib/dehydrated/accounts/
 
 # TODO: The first run often fails on CAC hardware, build a retry system?
 
-- name: systemd service
-  copy:
+- name: Systemd service
+  ansible.builtin.copy:
     dest: /etc/systemd/system/dehydrated.service
     mode: "a=r"
     content: |
@@ -41,8 +41,8 @@
       Type=oneshot
       ExecStart=dehydrated -c
 
-- name: systemd timer
-  copy:
+- name: Systemd timer
+  ansible.builtin.copy:
     dest: /etc/systemd/system/dehydrated.timer
     mode: "a=r"
     content: |
@@ -55,25 +55,25 @@
       [Install]
       WantedBy=timers.target
 
-- name: systemd reload
-  systemd:
+- name: Systemd reload
+  ansible.builtin.systemd:
     daemon_reload: true
 
-- name: systemd enable
-  systemd:
+- name: Systemd enable
+  ansible.builtin.systemd:
     name: "{{ item }}"
     enabled: true
   loop:
     - dehydrated
     - dehydrated.timer
 
-- name: systemd start timer
-  systemd:
+- name: Systemd start timer
+  ansible.builtin.systemd:
     name: dehydrated.timer
     state: started
 
 - name: Replace snakeoil certs
-  command: dehydrated -c --force
+  ansible.builtin.command: dehydrated -c --force
   args:
     removes: /var/lib/dehydrated/certs/snakeoil
 
@@ -82,6 +82,6 @@
 # So, we do the actual removal next
 
 - name: Remove snakeoil flag
-  file:
+  ansible.builtin.file:
     path: /var/lib/dehydrated/certs/snakeoil
     state: absent

@@ -1,5 +1,5 @@
 ---
 
 - name: Optionally install dehydrated
-  include_tasks: dehydrated.yml
+  ansible.builtin.include_tasks: dehydrated.yml
   when: dehydrated is defined

@@ -6,8 +6,8 @@
 # or has connected to the internet
 #
 
-- name: create dirs
-  file:
+- name: Create dirs
+  ansible.builtin.file:
     state: directory
     path: "{{ dehydrated_item.path }}"
     mode: "{{ dehydrated_item.mode }}"
@@ -22,7 +22,7 @@
     loop_var: dehydrated_item
 
 - name: Add domain
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/dehydrated/domains.txt
     create: true
     mode: "a=r"
@@ -30,7 +30,7 @@
   register: domain
 
 - name: Dummy certs
-  file:
+  ansible.builtin.file:
     state: link
     path: "{{ dehydrated_item.path }}"
     src: "{{ dehydrated_item.src }}"
@@ -52,9 +52,10 @@
 #   one and check if it is a symlink)
 
 - name: Flag that we have snakeoil
-  file:
+  ansible.builtin.file:
     state: touch
     path: /var/lib/dehydrated/certs/snakeoil
+    mode: "a=r"
   when: domain.changed
 
 # - set a flag requesting a "dehydrated -c --force" run if dummy certs created

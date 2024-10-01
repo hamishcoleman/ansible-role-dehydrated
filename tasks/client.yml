@@ -28,6 +28,8 @@
     mode: "a=r"
     line: "{{ param.hostname }}"
   register: domain
+  notify:
+    - Trigger dehydrated
 
 - name: Dummy certs  # noqa: no-handler
   ansible.builtin.file:

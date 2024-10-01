@@ -3,3 +3,8 @@
 - name: Reload systemd
   ansible.builtin.systemd:
     daemon_reload: true
+
+- name: Trigger dehydrated
+  ansible.builtin.systemd:
+    name: "dehydrated"
+    state: started

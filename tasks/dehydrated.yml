@@ -17,7 +17,7 @@
     dest: /etc/dehydrated/conf.d/config_hook.sh
     mode: "a=r"
     content: |
-      # Ansible managed
+      # Ansible managed - inline
       # Call the hook that restarts services
       HOOK=/usr/local/sbin/dehydrated_hook
 
@@ -33,7 +33,7 @@
     dest: /etc/systemd/system/dehydrated.service
     mode: "a=r"
     content: |
-      # Ansible managed
+      # Ansible managed - inline
       [Unit]
       Description=Run dehydrated
 
@@ -46,6 +46,7 @@
     dest: /etc/systemd/system/dehydrated.timer
     mode: "a=r"
     content: |
+      # Ansible managed - inline
       [Unit]
       Description=Run dehydrated ssl renew weekly
 

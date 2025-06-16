@@ -36,10 +36,15 @@
       # Ansible managed - inline
       [Unit]
       Description=Run dehydrated
+      StartLimitInterval=1h
+      StartLimitBurst=5
 
       [Service]
       Type=oneshot
       ExecStart=dehydrated -c
+      Restart=on-failure
+      RestartSec=5min
+
 
 - name: Systemd timer
   ansible.builtin.copy:

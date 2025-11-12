@@ -41,7 +41,7 @@
 
       [Service]
       Type=oneshot
-      ExecStart=dehydrated -c
+      ExecStart=/usr/bin/dehydrated -c
       Restart=on-failure
       RestartSec=5min
 

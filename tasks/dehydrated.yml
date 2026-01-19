@@ -42,8 +42,6 @@
       [Service]
       Type=oneshot
       ExecStart=/usr/bin/dehydrated -c
-      Restart=on-failure
-      RestartSec=5min
 
 
 - name: Systemd timer
